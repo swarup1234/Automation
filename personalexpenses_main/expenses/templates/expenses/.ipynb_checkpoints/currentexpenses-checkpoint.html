@@ -1,0 +1,63 @@
+{% extends 'userdata/base.html' %}
+
+{% block content %}
+
+  <div class="row justify-content-center mt-5">
+        <div class="col-md-10">
+            {% if expenses %}
+                 <h1> Expense{{ expenses.count|pluralize }}</h1>
+                 {% if Total %}  <h2 class="alert alert-warning"> Total: {{ Total }} </h2> {% endif %}
+                 <!--{% if graph %} graph|safe {% endif %}-->
+            {% else %}
+                           <h1>Expenses</h1>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-10">
+        {% if expenses %}
+            <div class="list-group">
+                <table class="table table table-bordered table-striped">
+                     <tr> <th> Payment Date </th> <th> Title </th> <th> Cost (Rs) </th>  <th> Details </th> <th> Category </th> </tr>
+                        {% for expense in expenses %}
+                                    <tr>
+                                        <td>{{ expense.paymentdate|date:'F jS Y' }}</td>
+                                        <th> <a href="{% url 'viewexpense' expense.id %}"> {{ expense.title|truncatechars:30 }} </a> </th>
+                                        <td {% if expense.value >= 10000 %} class="table-danger" {% endif %}>{{ expense.value }}</td>
+                                        <td>{{ expense.details|truncatechars:30 }}</td>
+                                        <td>{{ expense.category }}</td>
+                                    </tr>
+                        {% endfor %}
+                </table>
+                
+                {% if pagei %}
+                    <nav aria-label="Page navigation example">
+                      <ul class="pagination justify-content-end">
+                        <li class="page-item">
+                          <a class="page-link" href="{% url 'currentexpensespage' 1 %}" tabindex=" P ">First</a>
+                        </li>
+                          {% for i in pagei %}
+                                  <li class="page-item"><a class="page-link" href="{% url 'currentexpensespage' i|add:1 %}"> {{ i|add:1 }}-{{ i|add:n }} </a></li>              
+                        {% endfor %}
+
+                        <li class="page-item">
+                          <a class="page-link" href="{% url 'currentexpensespage' maxcount %}">Last</a>
+                        </li>
+
+                      </ul>
+                    </nav>
+
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center">
+                <h2>Looks like you don't have any expense list!.</h2>
+            <br>
+            <a role="button" class="btn btn-primary" href="{% url 'createexpense'  %}">New Expense</a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+
+{% endblock%}

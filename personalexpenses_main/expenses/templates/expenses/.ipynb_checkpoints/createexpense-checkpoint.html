@@ -1,0 +1,74 @@
+{% extends 'userdata/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <h2>New Expense</h2>
+        </div>
+</div>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <!--{{ form.as_p }}-->
+
+    
+            
+            <div class="form-group">
+                <label for="title">Expense Name</label>
+                <input type="text" name="title" class="form-control" id="title" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="value">Cost</label>
+                <input type="number" name="value" class="form-control" id="value" required>
+            </div>
+
+            <div class="form-group">
+                <label for="details">Details</label>
+                <textarea name="details" class="form-control" id="details" ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="paymentdate">Date</label>
+                <input type="date" name="paymentdate" class="form-control" id="paymentdate" data-date-format="YYYY-MM-DD"  required>
+                <!--<input type="text" name="paymentdate" class="form-control" id="paymentdate" required>-->
+            </div>
+
+           <div class="form-group">
+             <label for="category">Category</label> 
+             <input list="category" name="category">
+               </label>
+                <datalist id="category">
+                    <option value="Bills">
+                    <option value="Rent">
+                    <option value="Savings">
+                    <option value="Misc">
+                    <option value="Others">
+                </datalist>
+                
+               
+              <!--<select  class="form-control"  id="category" name="category">
+                <option selected>Choose...</option>
+                <option value="Bills">Bills</option>
+                <option value="Rent">Rent</option>
+                <option value="Savings">Savings</option>
+                <option value="Misc">Misc</option>
+                <option value="Others">Others</option>
+              </select>-->
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+
+
+{% endblock %}

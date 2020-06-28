@@ -1,0 +1,96 @@
+{% extends 'userdata/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+            {% if startdate %}
+                <h1>Expense List for dates between {{ startdate }} and {{ enddate }} </h1>
+                 <div class="col-md-10 justify-content-center">
+                    {% if Total %}  <h2 class="alert alert-warning"> Total: {{ Total }} </h2> {% endif %}
+                 </div>
+                {% if graph %} <h2> {{ graph|safe }} </h2> {% endif %}
+            {% else %}
+                <h1> Expense List </h1>
+            {% endif %}
+</div>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        {% if df  %}
+              <!--<div class="table table table-bordered table-striped" id="my_table"> {{ df| safe }} </div>-->
+        
+           
+               <table class="table table table-bordered table-striped">
+                     <tr> <th> Payment Date </th> <th> Title </th> <th> Cost (Rs) </th>  <th> Details </th> <th> Category </th> </tr>
+                        {% for expense in df %}
+                                    <tr>
+                                        <td>{{ expense.paymentdate|date:'F jS Y' }}</td>
+                                        <th> <a href="{% url 'viewexpense' expense.id %}"> {{ expense.title|truncatechars:30 }} </a> </th>
+                                        <td {% if expense.value >= 10000 %} class="table-danger" {% endif %}>{{ expense.value }}</td>
+                                        <td>{{ expense.details|truncatechars:30 }}</td>
+                                        <td>{{ expense.category }}</td>
+                                    </tr>
+                        {% endfor %}
+                </table>
+             
+            <button type="button" class="btn btn-warning" onclick="$('#back').click()">Back</button>
+
+        {% if pagei %}
+                    <nav aria-label="Page navigation example">
+                      <ul class="pagination justify-content-end">
+
+                          {% for i in pagei %}
+                                  <li class="page-item">
+                                      <button class="btn btn-dark" onclick="$('#{{ i }}').click()">{{ i }}</button>
+                                      
+                                      <form style='display: none;' method="POST">
+                                          {% csrf_token %}
+                                          <input type="date" name="startdate" class="form-control" id="startdate" data-date-format="YYYY-MM-DD" value = "{{ startdate }}" readonly> 
+                                          <input type="date" name="enddate" class="form-control" id="enddate" data-date-format="YYYY-MM-DD"  value = "{{ enddate }}" readonly>
+                                          <input type="text" name="page" class="form-control" id="page" value = "{{ i }}" readonly>
+                                          <button id = {{ i }} type="submit" class="btn btn-primary">{{ i }}</button>
+                                      </form>
+                                  </li>              
+                        {% endfor %}
+
+                      </ul>
+                    </nav>
+
+                </div>
+            {% endif %}
+
+
+        
+        {% else %}
+            <div class="col-md-5">
+                <form method="POST">
+                    {% csrf_token %}
+                    <!--{{ form.as_p }}-->
+                    
+                    <label for="startdate">From Date:</label>
+                    <input type="date" name="startdate" class="form-control" id="startdate" data-date-format="YYYY-MM-DD"  required>               
+                    <br>
+                    <label for="enddate">To Date:</label>
+                    <input type="date" name="enddate" class="form-control" id="enddate" data-date-format="YYYY-MM-DD"  required>
+                    <br>
+                     <button type="submit" class="btn btn-primary">Get Data!</button>
+                 </form>
+            </div>
+        {% endif %}
+        
+      </div>
+</div>
+
+<form style='display: none;' method="POST" action="{% url 'monthexpensepage' %}">
+    {% csrf_token %}
+    <button id="back" type="submit" class="btn btn-warning">Delete</button>
+</form>
+
+
+
+{% endblock %}

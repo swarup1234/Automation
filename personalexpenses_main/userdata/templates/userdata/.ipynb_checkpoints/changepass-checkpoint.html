@@ -1,0 +1,47 @@
+{% extends 'userdata/base.html' %}
+
+{% block content %}
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <h2>Change Password</h2>
+        </div>
+    </div>
+
+<div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+            
+            {% if username_pk != "1" %}            
+                <form method="POST">
+                    {% csrf_token %}
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" class="form-control" id="username", value={{ username_pk }} readonly>
+                    
+                    {{ form.as_p}}
+                     <button type="submit" class="btn btn-primary">{% if username_pk %}Change Password {% else %}Sign Up{% endif %}</button>
+                </form>
+            {% else %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">Enter username:</label>
+                        <input type="text" name="username" class="form-control" id="username">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </form>
+            
+            {% endif %}
+            <hr>
+            <div class="text-center">
+                Do you already have an account? <a href="{% url 'loginuser' %}">Login here</a>
+            </div>
+        </div>
+    </div>
+    
+    
+{% endblock %}
